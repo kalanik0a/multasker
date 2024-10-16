@@ -61,7 +61,7 @@ logger.log('critical', 'This is a critical message')
 ```python
 import concurrent.futures
 import time
-from multasker.process.ThreadPoolExecutor import ThreadPoolExecutor
+from multasker.process import ThreadPoolExecutor
 
 def task_with_delay():
     self.logger.log('debug', 'task_with_delay() called')

@@ -1,7 +1,6 @@
 import concurrent.futures
 import time
-from multasker.process.ThreadPoolExecutor import ThreadPoolExecutor
-from multasker.log import Logger
+from multasker.process import ThreadPoolExecutor
 from multasker.test.Test import Test
 
 class TestThreadPoolExecutor(Test):
