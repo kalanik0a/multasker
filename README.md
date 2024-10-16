@@ -6,8 +6,8 @@ A multitasking library with a logging facility and test driven development
 ```
 multasker.log.Logger - A logging facility using the logging module
 multasker.test.Test - A test driven development facility using the unittest module
-multasker.StarMapThreadPool - A batch processing multiprocessing facility using the multiprocessing module
-multasker.ThreadPoolExecutor - A batch processing multithreading facility using the concurrent.futures module
+multasker.process.StarMapThreadPool - A batch processing multiprocessing facility using the multiprocessing module
+multasker.process.ThreadPoolExecutor - A batch processing multithreading facility using the concurrent.futures module
 ```
 
 # Tests
