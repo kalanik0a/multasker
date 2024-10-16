@@ -1,3 +1,2 @@
-#from .ProcessWorker import ProcessWorker
-#from .ThreadWorker import ThreadWorker
-__all__ = ['ProcessWorker', 'ThreadWorker']
+from .StarMapThreadPool import StarMapThreadPool
+__all__ = [ 'StarMapThreadPool' ]

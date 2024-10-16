@@ -1,2 +1,3 @@
 from .TestLogger import TestLogger
-__all__ = ['TestLogger']
+from .TestStarMapThreadPool import TestStarMapThreadPool
+__all__ = ['TestLogger', 'TestStarMapThreadPool']
