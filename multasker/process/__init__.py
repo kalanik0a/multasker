@@ -1,2 +1,3 @@
 from .StarMapThreadPool import StarMapThreadPool
-__all__ = [ 'StarMapThreadPool' ]
+from .ThreadPoolExecutor import ThreadPoolExecutor
+__all__ = [ 'StarMapThreadPool', 'ThreadPoolExecutor' ]

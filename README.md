@@ -46,6 +46,59 @@ logger.log('error', 'This is an error message')
 logger.log('critical', 'This is a critical message')
 ```
 
+# Multithreading Usage Example
+
+```python
+import concurrent.futures
+import time
+from multasker.process.ThreadPoolExecutor import ThreadPoolExecutor
+
+def task_with_delay():
+    self.logger.log('debug', 'task_with_delay() called')
+    time.sleep(0.5)
+    return 11
+
+pool = ThreadPoolExecutor(max_workers=50, thread_name_prefix='test-threadpoolexecutor')
+time_a = time.time()
+futures = [ pool.submit(task_with_delay) for i in range(250) ]
+results = [ future.result() for future in concurrent.futures.as_completed(futures) ] 
+time_b = time.time()
+self.logger.log('info', f'Time elapsed: {time_b - time_a}')
+total = 0
+for result in results:
+    total += result
+print(total)
+pool.shutdown()
+```
+
+# Multiprocessing Usage Example - Processes and Threads
+
+```python
+from multitasker.process import StarMapThreadPool
+
+def print_filename(filename):
+    # Process data on file path here
+    return filename
+
+def flat_walk(root):
+    file_paths = []
+    for dirpath, dirnames, filenames in os.walk(root):
+        for filename in filenames:
+            file_paths.append(os.path.join(dirpath, filename))
+    file_paths = list(set(file_paths))
+    return file_paths
+
+paths = flat_walk('/')
+starmap = StarMapThreadPool(task_limit=250)
+starmap.pool_execute(print_filename, paths)
+flat = [ item for sublist in results for item in sublist ]
+
+for file in flat:
+	print(file)
+
+```
+
+
 # Test Usage
 
 ```python
@@ -84,11 +137,4 @@ if __name__ == '__main__':
 import unittest
 if __name__ == '__main__':
 	unittest.main()
-```
-
-# Todo
-
-```
-Multithreading with the threading module
-Multiprocessing with the multiprocessing module
 ```

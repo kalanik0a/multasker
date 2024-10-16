@@ -1,5 +1,5 @@
 import unittest
-from test import TestStarMapThreadPool
+from test import TestThreadPoolExecutor
 
 if __name__ == '__main__':
     unittest.main()

@@ -44,18 +44,18 @@ class TestStarMapThreadPool(Test):
     def test_walk(self):
         self.starmap = StarMapThreadPool(task_limit=250)
         self.logger.log('debug', 'Calling os.walk on root')
+        scan_path = "C:\\"
         os_walk_time = time.time()
-        paths = flat_walk('.')
+        paths = flat_walk(scan_path)
         os_walk_end_time = time.time()
         self.logger.log('debug', f'Called os.walk() in: {os_walk_end_time - os_walk_time}')
         start_time = time.time()
         self.logger.log('debug', f'f{len(paths)} directory entries in "/"')
         results = self.starmap.pool_execute(print_filename, paths)
         end_time = time.time()
-        print(results)
         flat = [ item for sublist in results for item in sublist ]
         count = 0
-        for a,b,c in os.walk('.'):
+        for a,b,c in os.walk(scan_path):
             print(c)
             for d in c:
                 count += 1
