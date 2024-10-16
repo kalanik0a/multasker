@@ -8,6 +8,21 @@ multasker.log.Logger - A logging facility using the logging module
 multasker.test.Test - A test driven development facility using the unittest module
 ```
 
+# Installation
+
+```bash
+git clone <clone_url>
+cd /path/to/multasker
+python3 setup.py install
+```
+
+# Uninstallation
+
+```
+pip uninstall multasker
+```
+
+
 # Logging Usage
 
 ```python
