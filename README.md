@@ -6,6 +6,9 @@ A multitasking library with a logging facility and test driven development
 ```
 multasker.log.Logger - A logging facility using the logging module
 multasker.test.Test - A test driven development facility using the unittest module
+
+multasker.process.TwoQueue - A batch processing multiprocessing facility using the multiprocessing module. 
+
 multasker.process.StarMapThreadPool - A batch processing multiprocessing facility using the multiprocessing module
 multasker.process.ThreadPoolExecutor - A batch processing multithreading facility using the concurrent.futures module
 ```
@@ -108,6 +111,19 @@ for file in flat:
 
 ```
 
+# TwoQueue Example
+
+`FileHasher.py` implements `multasker.process.TwoQueue` and is used in a test for this project.
+
+### [FileHasher.py](./test/FileHasher.py)
+
+```python
+FileHasher.set_num_workers(6)
+FileHasher.set_worker(FileHasher.worker,  FileHasher.load_existing_paths('DB-name.db'))
+FileHasher.set_batch(FileHasher.db_writer, 'DB-name.db')
+FileHasher.set_path('/mnt/d/Code/Python')
+FileHasher.process_data(FileHasher.queue_callback)
+```
 
 # Test Usage
 
