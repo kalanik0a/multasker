@@ -1,3 +1,4 @@
 from .StarMapThreadPool import StarMapThreadPool
 from .ThreadPoolExecutor import ThreadPoolExecutor
-__all__ = [ 'StarMapThreadPool', 'ThreadPoolExecutor' ]
+from .TwoQueue import TwoQueue
+__all__ = [ 'StarMapThreadPool', 'ThreadPoolExecutor', 'TwoQueue' ]

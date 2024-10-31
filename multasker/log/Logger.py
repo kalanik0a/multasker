@@ -6,8 +6,6 @@ import uuid
 import multiprocessing
 from multiprocessing import Lock
 
-sys.path.append(os.path.abspath('../../multasker'))
-
 class Logger():
     _instance = None
     _loggers = {}
