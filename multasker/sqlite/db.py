@@ -4,8 +4,9 @@ import sys
 import inspect
 
 from multasker.log import Logger
+from multasker.util import Singleton
 
-class DB:
+class DB(metaclass=Singleton):
     def log(self, level, message):
         self.logger.log(level, message)
 
