@@ -1,5 +1,5 @@
 import unittest
-from test import TestTwoQueue
+from test import TestDB
 
 if __name__ == '__main__':
     unittest.main()
