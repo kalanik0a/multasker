@@ -1,3 +1,4 @@
+import json
 import logging
 import logging.handlers
 import os
@@ -27,14 +28,16 @@ class Logger():
         self.guid = id(self)
         self.loglevel = self.get_logging_level(loglevel)
         self.output = output
-        self.config()
+        self.log_format = '[%(asctime)s][%(processName)s][%(levelname)s] %(message)s'
+        self.output_format = '%(message)'
+        self.config(stream=self.output, format=self.log_format)
 
-    def config(self, level=None, stream=None):
+    def config(self, level=None, stream=None, format=''):
         with self._lock:
             if self.guid not in self._loggers:
                 logger = logging.getLogger(str(self.guid))
                 handler = logging.StreamHandler(stream)
-                formatter = logging.Formatter('[%(asctime)s][%(processName)s][%(levelname)s] %(message)s')
+                formatter = logging.Formatter(self.log_format)
                 handler.setFormatter(formatter)
                 logger.addHandler(handler)
                 logger.setLevel(self.loglevel)
@@ -79,3 +82,12 @@ class Logger():
         if error is not None:
             self.log('ERROR', f'[{header}] {message} {type(error)}')
             self.log('ERROR', f'[{header}] {str(error)}')
+
+    def write_out(self, header='', message=''):
+        output = ''
+        if header == '':
+            output = f'{message}\n'
+        else:
+            output = f'{header} {message}\n'
+        self.output.write(output)
+        self.output.flush()
