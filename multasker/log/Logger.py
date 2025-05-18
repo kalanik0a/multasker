@@ -74,3 +74,8 @@ class Logger():
         logger = self.get_logger()
         level = self.get_logging_level(level)
         logger.log(level, message)
+
+    def log_error(self, header='ERROR', message='', error=None):
+        if error is not None:
+            self.log('ERROR', f'[{header}] {message} {type(error)}')
+            self.log('ERROR', f'[{header}] {str(error)}')

@@ -1,5 +1,5 @@
 import os
-from numbers import Number
+import hashlib
 
 from multasker.log import Logger
 
@@ -23,6 +23,25 @@ class File:
             file_size = 'large'
         output = { 'file_size' : file_size, 'read_size' : read_size }
         return output
+
+    @staticmethod
+    def hash_file(file_path: str, chunk_size=4096, digest_algorithm='sha256', logger=None):
+        try:
+            file_object = File(file_path=file_path, file_mode='rb')
+            file_handle = file_object.open()
+            if isinstance(file_handle, dict):
+                return None
+            else:
+                hasher = hashlib.new(digest_algorithm)
+                file_size_bytes = os.path.getsize(file_path)
+                size_data = File.get_read_size(file_size_bytes=file_size_bytes, chunk_size=chunk_size)
+                for chunk in iter(lambda: file_object.read(size_data['read_size']), b""):
+                    hasher.update(chunk)
+                return hasher.hexdigest()
+        except Exception as  e:
+            if isinstance(logger, Logger):
+                logger.log_error(header='File.hash_file', message=f'Error hashing file {file_path}', error=e)
+            return None
 
     def __init__(self, file_path=None, file_mode='r', logger=None):
         if isinstance(logger, Logger):
@@ -53,7 +72,6 @@ class File:
             return { 'message': 'No file path', 'error': ValueError('self.file_path is not defined') }
         else:
             return None
-
 
     def path_exists(self):
         if os.path.exists(os.path.abspath(self.file_path)):
