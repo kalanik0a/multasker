@@ -22,11 +22,6 @@ class Arguments(argparse.ArgumentParser):
                           allow_abbrev=x(collection=self.args, name='allow_abbrev', default=True),
                           exit_on_error=x(collection=self.args, name='exit_on_error', default=True))
 
-    def exit(self, status=0, message=None):
-        if message:
-            print(message)
-        print("Continuing execution...")  # Your custom logic here
-
     @staticmethod
     def option_or_default(collection:dict, name:str, default=None):
         if name in collection.keys():
