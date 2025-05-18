@@ -1,8 +1,29 @@
 import os
+from numbers import Number
 
 from multasker.log import Logger
 
 class File:
+    @staticmethod
+    def get_read_size(file_size_bytes: int, chunk_size: int):
+        output = None
+        read_size = None
+        file_size = None
+        if file_size_bytes < chunk_size:
+            read_size = file_size_bytes
+            file_size  = 'tiny'
+        elif chunk_size < file_size_bytes < (1024 * 1024 * 1024):
+            read_size = file_size_bytes if file_size_bytes < (1024 * 1024 * 32) else 1024 * 1024 * 32
+            file_size = 'small'
+        elif file_size_bytes >= (1024 * 1024 * 1024 * 10):
+            read_size = 1024 * 1024 * 128
+            file_size = 'huge'
+        elif file_size_bytes >= (1024 * 1024 * 1024):
+            read_size = 1024 * 1024 * 32
+            file_size = 'large'
+        output = { 'file_size' : file_size, 'read_size' : read_size }
+        return output
+
     def __init__(self, file_path=None, file_mode='r', logger=None):
         if isinstance(logger, Logger):
             self.logger = logger
@@ -74,12 +95,15 @@ class File:
             self.log_error(header='File.open', message=do_not_continue['message'], error=do_not_continue['error'])
             return do_not_continue
 
-    def read(self):
+    def read(self, read_size=None):
         do_not_continue = self.check_params()
         if do_not_continue is None:
             do_not_continue = self.handle_readable()
         if do_not_continue is None:
-            return self.file_handle.read()
+            if isinstance(read_size, int):
+                return self.file_handle.read(read_size)
+            else:
+                return self.file_handle.read()
         else:
             self.log_error(header='File.read', message=do_not_continue['message'], error=do_not_continue['error'])
             return do_not_continue

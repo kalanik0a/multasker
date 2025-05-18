@@ -1,1 +1,1 @@
-__all__ = [ 'process', 'test', 'log' ]
+__all__ = [ 'process', 'test', 'log', 'util', 'sqlite' ]
