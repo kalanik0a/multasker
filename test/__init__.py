@@ -3,4 +3,5 @@ from .TestStarMapThreadPool import TestStarMapThreadPool
 from .TestThreadPoolExecutor import TestThreadPoolExecutor
 from .TestTwoQueue import TestTwoQueue
 from .TestDB import TestDB
-__all__ = ['TestLogger', 'TestStarMapThreadPool', 'TestThreadPoolExecutor', 'TestTwoQueue', 'TestDB']
+from .TestConfiguration import TestConfiguration
+__all__ = ['TestLogger', 'TestStarMapThreadPool', 'TestConfiguration', 'TestThreadPoolExecutor', 'TestTwoQueue', 'TestDB']
