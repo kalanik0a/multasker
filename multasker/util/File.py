@@ -12,11 +12,11 @@ class File:
         if file_size_bytes < chunk_size:
             read_size = file_size_bytes
             file_size  = 'tiny'
-        elif chunk_size < file_size_bytes < (1024 * 1024 * 1024):
-            read_size = file_size_bytes if file_size_bytes < (1024 * 1024 * 32) else 1024 * 1024 * 32
+        elif (1024 * 1024 * 16) < file_size_bytes < (1024 * 1024 * 1024):
+            read_size = file_size_bytes if file_size_bytes < (1024 * 1024 * 16) else 1024 * 1024 * 16
             file_size = 'small'
         elif file_size_bytes >= (1024 * 1024 * 1024 * 10):
-            read_size = 1024 * 1024 * 128
+            read_size = 1024 * 1024 * 64
             file_size = 'huge'
         elif file_size_bytes >= (1024 * 1024 * 1024):
             read_size = 1024 * 1024 * 32

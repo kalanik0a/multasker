@@ -24,7 +24,14 @@ class TestLogger(Test):
     def __init__(self, method):
         super(TestLogger, self).__init__(method)
 
-    def test_b(self):
+    def test_05(self):
+        logging_level = self.logger.get_logging_level('info')
+        self.logger.get_logger().setLevel(logging_level)
+        self.logger.write_out('[test]', 'Testing the logger')
+        self.logger.write_out(message='Testing the logger (2)')
+
+
+    def test_02(self):
         logging_level = self.logger.get_logging_level('critical')
         debug_level = self.logger.get_logging_level('debug')
         self.logger.get_logger().setLevel(logging_level)
@@ -33,14 +40,14 @@ class TestLogger(Test):
         self.logger.get_logger().setLevel(debug_level)
         self.logger.log('debug', 'this should be seen')
 
-    def test_a(self):
+    def test_01(self):
         self.logger.log('debug', 'This is a debug message')
         self.logger.log('info', 'This is an info message')
         self.logger.log('warning', 'This is a warning message')
         self.logger.log('error', 'This is an error message')
         self.logger.log('critical', 'This is a critical message')
 
-    def test_c(self):
+    def test_03(self):
         processes = []
         for i in range(11):  # Create 3 processes
             process = multiprocessing.Process(target=process_function, args=(i,))
@@ -48,10 +55,8 @@ class TestLogger(Test):
             process.start()
         for process in processes:
             process.join()
-
-        Logger().stop_listener()
         
-    def test_barecall_logger(self):
+    def test_04(self):
         logger = Logger().get_logger()
         logger.debug('(empty call) This is a debug message')
         logger.info('(empty call) This is an info message')

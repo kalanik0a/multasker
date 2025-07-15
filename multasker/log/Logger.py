@@ -5,6 +5,7 @@ import os
 import sys
 import uuid
 import multiprocessing
+import atexit
 from multiprocessing import Lock
 
 class Logger():
@@ -24,37 +25,91 @@ class Logger():
                 cls._instance._listener_process = None
         return cls._instance
 
-    def __init__(self, loglevel='debug', output=sys.stdout):
+    def __init__(self, loglevel='debug', output=sys.stdout, logformat=None):
         self.guid = id(self)
         self.loglevel = self.get_logging_level(loglevel)
         self.output = output
-        self.log_format = '[%(asctime)s][%(processName)s][%(levelname)s] %(message)s'
+        if logformat is None:
+            self.log_format = '[%(asctime)s][%(processName)s][%(levelname)s] %(message)s'
+        else:
+            self.log_format = logformat
         self.output_format = '%(message)'
-        self.config(stream=self.output, format=self.log_format)
+        self.config(level=self.loglevel, stream=self.output, format=self.log_format)
+        atexit.register(self.stop_listener)
 
     def config(self, level=None, stream=None, format=''):
         with self._lock:
-            if self.guid not in self._loggers:
+            logger_entry = self._loggers.get(self.guid)
+
+            # Resolve the stream
+            resolved_stream = None
+            opened_file = None
+
+            if isinstance(stream, str):
+                # Treat as a path — ensure directory exists
+                os.makedirs(os.path.dirname(os.path.abspath(stream)), exist_ok=True)
+                opened_file = open(stream, 'a', encoding='utf-8')  # Open file for appending
+                resolved_stream = opened_file
+            elif hasattr(stream, 'write'):
+                # Treat as file-like object
+                resolved_stream = stream
+            else:
+                # Default fallback
+                resolved_stream = sys.stdout
+
+            if logger_entry is None:
                 logger = logging.getLogger(str(self.guid))
-                handler = logging.StreamHandler(stream)
-                formatter = logging.Formatter(self.log_format)
-                handler.setFormatter(formatter)
-                logger.addHandler(handler)
-                logger.setLevel(self.loglevel)
-                self._loggers[self.guid] = logger
+            else:
+                logger = logger_entry['logger']
+                # Remove existing handlers
+                for h in logger.handlers[:]:
+                    logger.removeHandler(h)
+
+            # Create new handler
+            handler = logging.StreamHandler(resolved_stream)
+            formatter = logging.Formatter(format or self.log_format)
+            handler.setFormatter(formatter)
+            handler.setLevel(level or self.loglevel)
+            logger.addHandler(handler)
+            logger.setLevel(level or self.loglevel)
+
+            # Store logger and stream
+            self._loggers[self.guid] = {
+                "logger": logger,
+                "stream": opened_file or resolved_stream
+            }
 
     def stop_listener(self):
         with self._lock:
-            for logger in self._loggers.values():
-                for handler in logger.handlers:
-                    handler.close()
-                logger.handlers.clear()
+            for logger_entry in self._loggers.values():
+                logger = logger_entry['logger']
+                stream = logger_entry.get('stream')
+
+                # Close and remove all handlers
+                for handler in logger.handlers[:]:
+                    try:
+                        handler.close()
+                    except Exception as e:
+                        sys.stderr.write(f"Error closing handler: {e}")
+                        sys.stderr.flush()
+                    logger.removeHandler(handler)
+
+                # Close the stream if it's a file we opened (not stdout/stderr)
+                if stream and hasattr(stream, 'close') and not stream.closed:
+                    if stream not in (sys.stdout, sys.stderr):
+                        try:
+                            stream.close()
+                        except Exception as e:
+                            sys.stderr.write(f"Error closing stream: {e}")
+                            sys.stderr.flush()
+
             self._loggers.clear()
 
     def get_logger(self):
         return self._loggers[self.guid]
 
     def get_logging_level(self, level=None):
+        level = level.lower()
         if level == 'debug':
             # Most messages
             # Lowest level, such as 10
@@ -74,7 +129,7 @@ class Logger():
         return level
 
     def log(self, level, message):
-        logger = self.get_logger()
+        logger = self.get_logger()['logger']
         level = self.get_logging_level(level)
         logger.log(level, message)
 
@@ -91,3 +146,6 @@ class Logger():
             output = f'{header} {message}\n'
         self.output.write(output)
         self.output.flush()
+
+    def __exit__(self, exc_type, exc_value, traceback):
+        self.stop_listener()

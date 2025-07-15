@@ -7,7 +7,7 @@ long_description = readme.read_text()
 
 setup(
     name='multasker',
-    version='0.3.3',
+    version='0.4.0',
     packages=find_packages(),
     install_requires=[],  # List any external dependencies here
     author='kalanik0a',
